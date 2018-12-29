@@ -2,10 +2,12 @@ package online.madeofmagicandwires.journal;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ListView;
 
 public class MainActivity extends JournalActivity {
@@ -34,6 +36,10 @@ public class MainActivity extends JournalActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Draw the screen and bind its data
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,32 +51,50 @@ public class MainActivity extends JournalActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new CreateEntryListener());
 
-
+        // retrieve database data and bind it to the listview
         updateState();
     }
 
     /**
-     * Initiates and links ListView to adapter and entries.
+     * Initiates and links the ListView to the data from the database and required event listeners
      */
     @Override
     public void updateState(){
         ListView list = findViewById(R.id.entriesList);
+
+        // create database and adapter if needed
         if(db == null) {
             db = EntryDatabase.getInstance(getApplicationContext());
             Cursor c = db.selectAll();
-            adapter = new EntryAdapter(this, EntryAdapter.DEFAULT_LAYOUT, c, EntryAdapter.NO_SELECTION);
-            listener = new CursorAdapterListener();
+            adapter = new EntryAdapter(
+                    this,
+                    EntryAdapter.DEFAULT_LAYOUT,
+                    c,
+                    EntryAdapter.NO_SELECTION);
 
-
-            list.setEmptyView(findViewById(R.id.emptyListState));
-            list.setAdapter(adapter);
-            list.setOnItemClickListener(listener);
-            list.setOnItemLongClickListener(listener);
-
-        } else {
+        } else { // otherwise, swap cursor
             Cursor c = db.selectAll();
+            Log.d("updateState", DatabaseUtils.dumpCursorToString(c));
             adapter.swapCursor(c);
         }
+
+        // attach adapter if needed
+        if(list.getAdapter() == null) {
+            list.setAdapter(adapter);
+        }
+
+        // attach listeners if needed
+        if(!list.hasOnClickListeners()) {
+            listener = new CursorAdapterListener();
+            list.setOnItemClickListener(listener);
+            list.setOnItemLongClickListener(listener);
+        }
+
+        // attach empty state view if needed
+        if(list.getEmptyView() == null) {
+            list.setEmptyView(findViewById(R.id.emptyListState));
+        }
+
     }
 
 

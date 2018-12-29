@@ -1,7 +1,7 @@
 package online.madeofmagicandwires.journal;
 
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,14 +56,14 @@ abstract public class JournalActivity extends AppCompatActivity {
          */
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //TODO: implement this
-            Log.d("TODO", "call showEntry()");
-
             Log.d("item type", parent.getItemAtPosition(position).toString());
             if(db != null) {
                 JournalEntry entry =  db.getEntry(id);
                 if(entry != null) {
-                    editEntry(view.getContext(), entry);
+                    if(view.getContext() instanceof JournalActivity) {
+                        showEntry((JournalActivity) view.getContext(), entry);
+                    }
+
                 }
             }
         }
@@ -137,27 +137,35 @@ abstract public class JournalActivity extends AppCompatActivity {
      * @see InputActivity
      */
     public void createEntry(View v) {
-        editEntry(v.getContext(), new JournalEntry("", "", JournalEntry.MOOD_UNKNOWN));
+        if(v.getContext() instanceof JournalActivity) {
+            editEntry((JournalActivity) v.getContext(), new JournalEntry("", "", JournalEntry.MOOD_UNKNOWN));
+        }
+
     }
 
     /**
      * Starts the InputActivity to create or open a Journal entry to be edited by the user
-     * @param context the Activity context
+     *
+     * @param activity the Activity from which to start InputActivity
      * @param entry   a possible entry to pass along to InputActivity, will be ignored if null
      * @see InputActivity
      */
-    public void editEntry(@NonNull Context context, @Nullable JournalEntry entry) {
-        Intent intent = new Intent(context, InputActivity.class);
+    public void editEntry(@NonNull JournalActivity activity, @Nullable JournalEntry entry) {
+        Intent intent = new Intent(activity, InputActivity.class);
         // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // always return to launcher activity;
         if(entry != null) {
             intent.putExtra(JOURNAL_ENTRY_BUNDLE_KEY, entry);
 
         }
 
-        startActivityForResult(intent, REQUEST_EDIT_ENTRY);
+        activity.startActivityForResult(intent, REQUEST_EDIT_ENTRY);
 
     }
 
+    /**
+     * Saves a new or updated entry to the Journal Entries database
+     * @param entry Journal Entry to be inserted or updated in the database
+     */
     public void saveEntry(JournalEntry entry) {
         long result = -1;
         if(entry != null && !entry.isEmpty()) {
@@ -178,6 +186,19 @@ abstract public class JournalActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG);
             ts.show();
         }
+
+    }
+
+    /**
+     * Shows an entries details in DetailActivity
+     * @param activity the activity to start DetailActivity from (will in practice always be MainActivity)
+     * @param entry the JournalEntry object to show
+     */
+    public void showEntry(@NonNull JournalActivity activity, @NonNull JournalEntry entry) {
+        Intent intent = new Intent(activity, DetailActivity.class);
+        intent.putExtra(JOURNAL_ENTRY_BUNDLE_KEY, entry);
+
+        activity.startActivity(intent);
 
     }
 

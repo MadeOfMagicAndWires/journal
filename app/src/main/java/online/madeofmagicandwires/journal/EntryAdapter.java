@@ -28,7 +28,7 @@ public class EntryAdapter extends ResourceCursorAdapter {
     /** The default layout to inflate **/
     public static final @LayoutRes int DEFAULT_LAYOUT = R.layout.entry_row;
     /** represents 48 hours counted out to milliseconds */
-    public static final long LONG_TIME_48_HOURS = (24 * 60 * 60 * 1000);
+    public static final long LONG_TIME_48_HOURS = (2 * 24 * 60 * 60 * 1000);
 
 
     /**

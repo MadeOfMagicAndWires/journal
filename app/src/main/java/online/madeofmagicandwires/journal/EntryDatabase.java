@@ -72,13 +72,38 @@ public class EntryDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all entries in the table
-     * @return Cursor containing all the data
+     * Returns all entries in the table ordered by latest posted
+     * @return Cursor containing all the data; except the "content" column
      */
     public Cursor selectAll() {
         // we're not writing in this method so getReadableDatabase instead
-        SQLiteDatabase db = getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + DB_TABLE_NAME + " ORDER BY " + TABLE_COLUMN_TIMESTAMP + " DESC",
+        SQLiteDatabase db = getReadableDatabase();
+        // query all rows with all columns EXCEPT content (since we don't use it), ordered by latest added
+        return db.query(
+                DB_TABLE_NAME,
+                new String[]{TABLE_COLUMN_TITLE, TABLE_COLUMN_MOOD, TABLE_COLUMN_TIMESTAMP, TABLE_COLUMN_ID},
+                null,
+                null,
+                null,
+                null,
+                TABLE_COLUMN_TIMESTAMP + " DESC",
+                null);
+    }
+
+    /**
+     * Returns all data of all entries in thable ordered by latest posted
+     * @return Cursor containing all the data; to be processed into a List of JournalEntry objects.
+     */
+    public Cursor selectAllForList() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(
+                DB_TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                TABLE_COLUMN_TIMESTAMP + " DESC",
                 null);
     }
 
@@ -111,7 +136,7 @@ public class EntryDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns the database entry as a JournalEntry object
+     * Returns a single database entry as a JournalEntry object
      * @param id the database id of the object; corresponding to its value under the {@link #TABLE_COLUMN_ID} column
      * @return JournalEntry object containing all the entry's data in the database
      */
