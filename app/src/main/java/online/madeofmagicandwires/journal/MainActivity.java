@@ -1,17 +1,38 @@
 package online.madeofmagicandwires.journal;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends JournalActivity {
+
+    private static EntryAdapter adapter = null;
+    private static JournalActivity.CursorAdapterListener listener = null;
+
+    /**
+     * Retrieves a journal entry from a previous activity
+     * @param requestCode the code of the type of request
+     * @param resultCode the code of the result
+     * @param data  the data of the result
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == REQUEST_EDIT_ENTRY) {
+            if(resultCode == RESULT_OK) {
+                retrieveJournalEntry(data);
+                saveEntry(entry);
+            }
+            this.updateState();
+        } else {
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,27 +43,35 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(new CreateEntryListener());
 
-        initJournalList();
+
+        updateState();
     }
 
     /**
      * Initiates and links ListView to adapter and entries.
      */
-    public void initJournalList(){
-        LayoutInflater inflater = LayoutInflater.from(this);
+    @Override
+    public void updateState(){
         ListView list = findViewById(R.id.entriesList);
+        if(db == null) {
+            db = EntryDatabase.getInstance(getApplicationContext());
+            Cursor c = db.selectAll();
+            adapter = new EntryAdapter(this, EntryAdapter.DEFAULT_LAYOUT, c, EntryAdapter.NO_SELECTION);
+            listener = new CursorAdapterListener();
 
-        View emptyState = inflater.inflate(R.layout.entries_list_empty_state, list, false);
-        list.setEmptyView(emptyState);
 
+            list.setEmptyView(findViewById(R.id.emptyListState));
+            list.setAdapter(adapter);
+            list.setOnItemClickListener(listener);
+            list.setOnItemLongClickListener(listener);
+
+        } else {
+            Cursor c = db.selectAll();
+            adapter.swapCursor(c);
+        }
     }
+
 
 }

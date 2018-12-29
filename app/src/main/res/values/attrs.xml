@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- See https://kmansoft.com/2011/01/11/checkable-image-button/ and
+    https://developer.android.com/training/custom-views/create-view#customattr for inspiration -->
+    <declare-styleable name="MoodRadioButton">
+        <attr name="is_checked" format="boolean" />
+
+        <attr name="moodValue">
+            <enum name="angry" value="0" />
+            <enum name="bored" value="1" />
+            <enum name="happy" value="2" />
+            <enum name="sad"   value="3" />
+            <enum name="unknown" value="-1" />
+        </attr>
+    </declare-styleable>
+</resources>

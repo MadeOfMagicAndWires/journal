@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Journal</string>
     <string name="action_settings">Settings</string>
+    <string name="action_save_entry">Save entry</string>
 
     <string name="mood_angry">miffed</string>
     <string name="mood_bored">bored</string>
@@ -9,13 +10,18 @@
 
     <string name="grinning_face">&#x1f600;</string>
     <string name="slightly_frowning_face">&#x1f641;</string>
-    <string name="angry_face">&#x1f620;</string>
+    <string name="unamused_face">&#x1f612;</string>
     <string name="expressionless_face">&#x1f611;</string>
 
-    <string name="emoji_angry">@string/angry_face</string>
+    <string name="emoji_angry">@string/unamused_face</string>
     <string name="emoji_bored">@string/expressionless_face</string>
     <string name="emoji_happy">@string/grinning_face</string>
     <string name="emoji_sad">@string/slightly_frowning_face</string>
+    <string name="entry_input_content_label">Content:</string>
+    <string name="input_entry_content_hint">Please write body</string>
+    <string name="input_entry_mood_label">Mood:</string>
+    <string name="input_entry_title_label">Entry title:</string>
+    <string name="input_entry_title_hint">Please fill in a title.</string>
 
 
 </resources>

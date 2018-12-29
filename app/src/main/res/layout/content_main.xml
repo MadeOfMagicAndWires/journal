@@ -9,10 +9,22 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <ListView
-        android:id="@+id/entriesList"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="match_parent">
+
+        <include layout="@layout/entries_list_empty_state"
+            android:visibility="gone"
+            />
+
+        <ListView
+            android:id="@+id/entriesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+
+    </RelativeLayout>
+
 
 </android.support.constraint.ConstraintLayout>
