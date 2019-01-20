@@ -133,12 +133,21 @@ abstract public class JournalActivity extends AppCompatActivity {
             }
             updateState();
         } else {
-            return;
+            updateState();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Updates the state when returning from a different activity.
+     * Mainly needed for the relative time strings
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateState();
+    }
 
     /**
      * Updates views with data contained in Journal entry or EntryDatabase
