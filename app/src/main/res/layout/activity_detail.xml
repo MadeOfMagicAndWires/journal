@@ -1,9 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DetailActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <!--
+     -  See https://medium.com/p/41aff9c5c468
+     -  and https://medium.com/p/e1d8a05dcb02
+     -  for inspiration
+     -->
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+            app:contentScrim="?attr/colorPrimary"
+            android:fitsSystemWindows="true"
+
+            tools:background="@color/moodAngry">
+
+            <!-- TODO: center emoji for android P if possible -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/details_entry_mood_emoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="100dp"
+                    android:minWidth="100dp"
+                    android:textSize="75sp"
+                    android:textAlignment="center"
+                    android:background="@drawable/round_border"
+                    tools:text="@string/emoji_angry"/>
+
+                <TextView
+                    android:id="@+id/details_entry_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    android:textColor="#ffff"
+
+                    tools:text="Entry Title"/>
+
+                <TextView
+                    android:id="@+id/details_entry_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="#fff"
+
+                    tools:text="@tools:sample/date/ddmmyy" />
+            </LinearLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/toolbar"
+                app:layout_collapseMode="pin"
+                app:title="Details"
+                style="@style/Base.V7.Widget.AppCompat.Toolbar">
+            </android.support.v7.widget.Toolbar>
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+            <TextView
+                android:id="@+id/details_entry_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:textSize="20sp"
+
+                tools:text="@tools:sample/lorem/random"
+                />
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

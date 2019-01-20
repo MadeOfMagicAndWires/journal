@@ -22,6 +22,7 @@
     <string name="input_entry_mood_label">Mood:</string>
     <string name="input_entry_title_label">Entry title:</string>
     <string name="input_entry_title_hint">Please fill in a title.</string>
+    <string name="details_action_edit">Edit entry</string>
 
 
 </resources>

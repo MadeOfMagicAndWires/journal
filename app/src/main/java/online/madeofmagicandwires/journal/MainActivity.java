@@ -15,40 +15,20 @@ public class MainActivity extends JournalActivity {
     private static EntryAdapter adapter = null;
     private static JournalActivity.CursorAdapterListener listener = null;
 
-    /**
-     * Retrieves a journal entry from a previous activity
-     * @param requestCode the code of the type of request
-     * @param resultCode the code of the result
-     * @param data  the data of the result
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == REQUEST_EDIT_ENTRY) {
-            if(resultCode == RESULT_OK) {
-                retrieveJournalEntry(data);
-                saveEntry(entry);
-            }
-            this.updateState();
-        } else {
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     /**
      * Draw the screen and bind its data
-     * @param savedInstanceState
+     * @param savedInstanceState data saved from previous state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new CreateEntryListener());
 
         // retrieve database data and bind it to the listview
@@ -74,7 +54,6 @@ public class MainActivity extends JournalActivity {
 
         } else { // otherwise, swap cursor
             Cursor c = db.selectAll();
-            Log.d("updateState", DatabaseUtils.dumpCursorToString(c));
             adapter.swapCursor(c);
         }
 

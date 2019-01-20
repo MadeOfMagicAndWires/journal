@@ -1,7 +1,5 @@
 package online.madeofmagicandwires.journal;
 
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -101,9 +99,8 @@ abstract public class JournalActivity extends AppCompatActivity {
     /**
      * Retrieves a journal entry from savedInstanceState or Intent if available
      * Creates a new JournalEntry instance if not
-     * @param savedInstanceState
-     * @return true if journal entry was passed on from previous state or intent;
-     *         false if a new JournalEntry had to be created.
+     * @param savedInstanceState saved data from a suspended state
+     *
      */
     public void retrieveJournalEntry(Bundle savedInstanceState) {
         if (savedInstanceState != null && savedInstanceState.containsKey(JOURNAL_ENTRY_BUNDLE_KEY)) {
@@ -113,7 +110,7 @@ abstract public class JournalActivity extends AppCompatActivity {
 
     /**
      * Retrieves a journal entry from intent
-     * @param i
+     * @param i the intent to retrieve journal entry from
      */
     public void retrieveJournalEntry(Intent i) {
         if(i.hasExtra(JOURNAL_ENTRY_BUNDLE_KEY)) {
@@ -121,6 +118,28 @@ abstract public class JournalActivity extends AppCompatActivity {
         }
 
     }
+
+    /**
+     * Retrieves a journal entry from the result returned by a previous activity
+     * @param requestCode the code of the type of request
+     * @param resultCode the code of the result
+     * @param data  the data of the result
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == REQUEST_EDIT_ENTRY) {
+            if(resultCode == RESULT_OK) {
+                retrieveJournalEntry(data);
+                saveEntry(entry);
+            }
+            updateState();
+        } else {
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     /**
      * Updates views with data contained in Journal entry or EntryDatabase
@@ -132,7 +151,7 @@ abstract public class JournalActivity extends AppCompatActivity {
 
     /**
      * Opens InputActivity to create and a fresh Journal entry to be edited by the user
-     * @param v
+     * @param v a View inside a JournalActivity context
      * @see #editEntry
      * @see InputActivity
      */
@@ -205,7 +224,7 @@ abstract public class JournalActivity extends AppCompatActivity {
 
     /**
      * Custom onSaveState that saves a journalentry to be retrieved on create
-     * @param outState
+     * @param outState bundle to store data in to be reused next time this activity is drawn
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {

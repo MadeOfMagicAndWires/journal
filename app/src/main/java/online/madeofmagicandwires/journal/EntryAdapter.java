@@ -3,7 +3,6 @@ package online.madeofmagicandwires.journal;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +27,7 @@ public class EntryAdapter extends ResourceCursorAdapter {
     /** The default layout to inflate **/
     public static final @LayoutRes int DEFAULT_LAYOUT = R.layout.entry_row;
     /** represents 48 hours counted out to milliseconds */
-    public static final long LONG_TIME_48_HOURS = (2 * 24 * 60 * 60 * 1000);
+    private static final long LONG_TIME_48_HOURS = (2 * 24 * 60 * 60 * 1000);
 
 
     /**
@@ -42,7 +41,7 @@ public class EntryAdapter extends ResourceCursorAdapter {
      * @param flags   Flags used to determine the behavior of the adapter,
      *                as per {@link android.widget.CursorAdapter#CursorAdapter(Context, Cursor, int)}.
      */
-    public EntryAdapter(@NonNull  Context context, @Nullable @LayoutRes int layout, @NonNull Cursor c, int flags) {
+    public EntryAdapter(@NonNull  Context context, @LayoutRes int layout, @NonNull Cursor c, int flags) {
         super(context, layout, c, flags);
     }
 
@@ -129,17 +128,21 @@ public class EntryAdapter extends ResourceCursorAdapter {
     }
 
     /**
-     * Format date to specific values depending on how long ago it was
-     * @param datetime
-     * @return formatted date, such as "x seconds ago", "x minute(s) ago" "yesterday" or short iso 8601 format
+     * Formats datetime to relative or short ISO-8601 format yyyy-mm-dd
+     * @param context  application or activity context needed for locales
+     * @param datetime a sql timestamp referring to a datetime earlier than the current time.
+     * @param useRelative whether to use a relative time format if possible,
+     *                    or whether to always use the short ISO-8061 format
+     * @return formatted string, such as "x seconds ago" or  "yesterday" if the timestamp is from less than two days ago
+     *         or a short iso 8601 format if it's longer than that or useRelative is set to false
      */
-    public static String formatDate(Context c, @NonNull Timestamp datetime) {
-        String formatted = "";
+    public static String formatDate(Context context, @NonNull Timestamp datetime, boolean useRelative) {
+        String formatted;
         long now = System.currentTimeMillis();
         long timeSince = now - datetime.getTime();
 
         //             equals 48 hours as a long
-        if(timeSince < LONG_TIME_48_HOURS) {
+        if(useRelative && timeSince < LONG_TIME_48_HOURS) {
              formatted = (String) DateUtils.getRelativeTimeSpanString(
                      datetime.getTime(),
                      now,
@@ -147,10 +150,20 @@ public class EntryAdapter extends ResourceCursorAdapter {
                      DateUtils.FORMAT_ABBREV_RELATIVE);
         } else {
             SimpleDateFormat shortIsoFormat = new SimpleDateFormat("yyyy-MM-dd",
-                    c.getResources().getConfiguration().getLocales().get(0));
+                    context.getResources().getConfiguration().getLocales().get(0));
             formatted = shortIsoFormat.format(datetime);
         }
         return formatted;
+    }
+
+    /**
+     * Formats datetime to relative or short ISO-8601 format yyyy-mm-dd
+     * @param context  application or activity context needed for locales
+     * @param datetime a sql timestamp object
+     * @return a formatted string representing the date from the datetime object in the format of yyyy-mm-dd
+     */
+    public static String formatDate(Context context, @NonNull Timestamp datetime) {
+        return formatDate(context, datetime, true);
     }
 
 
