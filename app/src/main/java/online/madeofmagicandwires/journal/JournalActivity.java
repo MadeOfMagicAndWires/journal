@@ -98,7 +98,6 @@ abstract public class JournalActivity extends AppCompatActivity {
 
     /**
      * Retrieves a journal entry from savedInstanceState or Intent if available
-     * Creates a new JournalEntry instance if not
      * @param savedInstanceState saved data from a suspended state
      *
      */
