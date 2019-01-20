@@ -9,13 +9,17 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <RelativeLayout
+    <include layout="@layout/entries_list_empty_state"
+        android:visibility="gone"
+        />
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/entries_list_empty_state"
-            android:visibility="gone"
-            />
+
 
         <ListView
             android:id="@+id/entriesList"
@@ -23,8 +27,7 @@
             android:layout_height="match_parent"
             />
 
-
-    </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </android.support.constraint.ConstraintLayout>
